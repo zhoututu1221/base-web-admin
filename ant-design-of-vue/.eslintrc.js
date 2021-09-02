@@ -14,6 +14,8 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     // 注册后有未使用的组件将不报错
-    "vue/no-unused-components": "off"
+    "vue/no-unused-components": "off",
+    "no-unused-vars": "off",
+    "vue/no-unused-vars": "off"
   }
 }
