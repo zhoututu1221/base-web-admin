@@ -1,6 +1,6 @@
 <!-- 侧边菜单 -->
 <template>
-  <div style="width: 100%;">
+  <div class="slider-menu" style="width: 100%;">
     <a-menu
       :selectedKeys="selectedKeys"
       :open-keys.sync="openKeys"
@@ -64,16 +64,32 @@ export default {
     collapsed(val) {
       // 解决收缩还展示子菜单问题
       this.openKeys = null;
-      this.sliderControl();
+
+      let path = this.$route.path;
+      if(path == "/" || path == "/list"){
+        this.sliderControl();
+      }
     },
 
     // 监听地址栏变化
     $route(val) {
+      let path = val.path;
+
       // 侧边栏控制
-      this.sliderControl();
+      if(path == "/" || path == "/list"){
+        this.sliderControl();
+      }else{
+        this.selectedKeys = [];
+      }
 
       // 面包屑导航控制
       this.refreshBreadcrumb();
+
+      // 添加导航标签
+      if(val.path == "/list"){
+        this.addMenu();
+      }
+
     },
   },
   //方法集合
@@ -94,6 +110,34 @@ export default {
         path: "/list",
         query: { open: open, select: select },
       });
+
+    },
+    
+    // 添加导航标签
+    addMenu() {
+      var menuId = null;
+      var tagsId = null;
+      if (this.$route.query.select != undefined && this.$route.query.select != "") {
+        if (this.$route.query.select.toString().split("-")[0] != undefined)
+          menuId = this.$route.query.select.toString().split("-")[0];
+        if (this.$route.query.select.toString().split("-")[1] != undefined)
+          tagsId = this.$route.query.select.toString().split("-")[1];
+      }
+
+      var menuTemp = this.menu;
+      var currentMenu = null;
+
+      if (menuId == null) {
+        currentMenu = null;
+      } else {
+        currentMenu = menuTemp.filter((item) => item.menuId == menuId)[0];
+        var tags = currentMenu.tags;
+        var currentTags = tags.filter((item) => item.tagsId == tagsId);
+        currentMenu.nowTags = currentTags;
+      }
+      if(currentMenu != null){
+        this.$store.commit("addMenu", currentMenu);
+      }
     },
 
     // 侧边栏菜单相关操作
@@ -110,6 +154,8 @@ export default {
         // 解决收缩还展示子菜单问题
         if (select != undefined) {
           this.selectedKeys = [select];
+        }else{
+          this.selectedKeys = [];
         }
       } else {
         // 侧边栏展开
@@ -118,6 +164,8 @@ export default {
         if (open != undefined && select != undefined) {
           this.openKeys = [open];
           this.selectedKeys = [select];
+        }else{
+          this.selectedKeys = [];
         }
       }
     },
@@ -182,6 +230,12 @@ export default {
     that.menu = that.$testData.menu;
     that.hasTags = that.menu.filter((item) => item.tags.length != 0);
     that.noTags = that.menu.filter((item) => item.tags.length == 0);
+    // 根据URL刷新面包屑
+    this.refreshBreadcrumb();
+    // 根据URL添加导航标签
+    if(this.$route.path == "/list"){
+      this.addMenu();
+    }
 
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
@@ -198,12 +252,41 @@ export default {
 };
 </script>
 <style scoped>
+.slider-menu{
+  height: auto;
+}
+
+.ant-menu{
+  /* 去除菜单栏边框线 */
+  border-right-width: 0px !important;
+}
+
 .menu {
   height: 100%;
 }
 
 .anticon {
   font-size: 16px;
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar-track {
+  background: white;
+  border-radius: 0;
+}
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 5px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  cursor: pointer;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  transition: color 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 @media (min-width: 768px) and (max-width: 992px) {

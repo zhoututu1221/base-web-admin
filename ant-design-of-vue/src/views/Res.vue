@@ -1,6 +1,6 @@
 <!-- 资源详情 -->
 <template>
-  <div class="">资源详情</div>
+  <div class="res">资源详情</div>
 </template>
 
 <script>
@@ -34,4 +34,8 @@ export default {
 };
 </script>
 <style scoped>
+.res {
+  background-color: white;
+  padding: 16px;
+}
 </style>

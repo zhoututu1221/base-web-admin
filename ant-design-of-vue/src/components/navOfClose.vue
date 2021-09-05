@@ -1,12 +1,18 @@
 <!-- 导航标签 -->
 <template>
   <div class="nav-of-close">
-    <a-tabs v-model="activeKey" hide-add type="editable-card" @edit="onEdit">
+    <a-tabs v-model="activeKey" @tabClick="tabClick" hide-add type="editable-card" @edit="onEdit">
       <a-tab-pane
-        v-for="pane in panes"
-        :key="pane.key"
-        :tab="pane.title"
-        :closable="pane.closable"
+        key="index"
+        tab="首页"
+        :closable="false"
+      >
+      </a-tab-pane>
+      <a-tab-pane
+        v-for="item in menuList"
+        :key="JSON.parse(item).nowTags.length == 0 ? JSON.parse(item).menuId.toString() : JSON.parse(item).menuId.toString() + '-' + JSON.parse(item).nowTags[0].tagsId.toString()"
+        :tab="JSON.parse(item).nowTags.length == 0 ? JSON.parse(item).menuName.toString() : JSON.parse(item).menuName.toString() + ' > ' + JSON.parse(item).nowTags[0].tagsName.toString()"
+        :closable="true"
       >
       </a-tab-pane>
     </a-tabs>
@@ -16,67 +22,129 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
+import { mapState } from "vuex";
 
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: {},
   data() {
-    const panes = [
-      { title: 'Tab 1', content: 'Content of Tab 1', key: '1' },
-      { title: 'Tab 2', content: 'Content of Tab 2', key: '2' },
-    ];
     //这里存放数据
     return {
-      activeKey: panes[0].key,
-      panes,
-      newTabIndex: 0,
+      activeKey: "index",
     };
   },
   //监听属性 类似于data概念
-  computed: {},
+  computed: {
+    ...mapState({
+      menuList: (state) => state.navOfClose.menuList,
+      currentMenu: (state) => state.navOfClose.currentMenu,
+    }),
+  },
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    currentMenu(){
+      if(this.currentMenu.menuId != undefined){
+        if(this.currentMenu.nowTags.length == 0){
+          this.activeKey = this.currentMenu.menuId.toString();
+        }else{
+          this.activeKey = this.currentMenu.menuId.toString() + "-" + this.currentMenu.nowTags[0].tagsId.toString();
+        }
+      }
+    },
+    $route(val){
+      let path = val.path;
+      if(path != "/" && path != "/list"){
+        this.activeKey = "";
+      }else{
+        if(val.query.select != undefined && val.query.select != ""){
+          this.selectNav(val.query.select);
+        }
+      }
+    },
+  },
   //方法集合
   methods: {
-    callback(key) {
-      console.log(key);
+
+    // 点击导航标签
+    tabClick(key){
+
+      let val = key;
+
+      let path = "";
+      let open = val.split('-')[0];
+      let select = val;
+      let query = null;
+
+      if(val == "index"){
+        path = "/";
+        query = {};
+      }else{
+        path = "/list"
+        query = { open: open, select: select };
+      }
+
+      this.$router.push({
+        path: path,
+        query: query,
+      });
+
     },
+    
+    // 根据传入的val跳转
+    selectNav(val){
+      let path = "";
+      let open = val.split('-')[0];
+      let select = val;
+      let query = null;
+
+      if(val == "index"){
+        path = "/";
+        query = {};
+      }else{
+        path = this.$route.path;
+        query = { open: open, select: select };
+      }
+
+      this.$router.push({
+        path: path,
+        query: query,
+      });
+    },
+
     onEdit(targetKey, action) {
       this[action](targetKey);
     },
-    add() {
-      const panes = this.panes;
-      const activeKey = `newTab${this.newTabIndex++}`;
-      panes.push({
-        title: `New Tab ${activeKey}`,
-        content: `Content of new Tab ${activeKey}`,
-        key: activeKey,
-      });
-      this.panes = panes;
-      this.activeKey = activeKey;
-    },
+
+    // 移除导航标签
     remove(targetKey) {
-      let activeKey = this.activeKey;
-      let lastIndex;
-      this.panes.forEach((pane, i) => {
-        if (pane.key === targetKey) {
-          lastIndex = i - 1;
-        }
-      });
-      const panes = this.panes.filter((pane) => pane.key !== targetKey);
-      if (panes.length && activeKey === targetKey) {
-        if (lastIndex >= 0) {
-          activeKey = panes[lastIndex].key;
-        } else {
-          activeKey = panes[0].key;
-        }
+      let menu = this.menuList;
+      
+      let menuId = targetKey.split('-')[0];
+      let tagsId = null;
+
+      if(targetKey.split('-').length > 1){
+        tagsId = targetKey.split('-')[1];
       }
-      this.panes = panes;
-      this.activeKey = activeKey;
+
+      let index = -1;
+
+      if(tagsId == null){
+        index = menu.findIndex(item => JSON.parse(item).menuId == menuId);
+      }else{
+        index = menu.findIndex(item => JSON.parse(item).menuId == menuId && JSON.parse(item).nowTags[0].tagsId == tagsId);
+      }
+       
+      index != -1 ? this.$store.commit("removeMenu", index) : "";
+
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
+  created() {
+    // 刚进入页面时设置其选中的导航标签
+    if(this.$route.query.select != undefined && this.$route.query.select != ""){
+      this.activeKey = this.$route.query.select;
+    }
+  },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前

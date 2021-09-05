@@ -1,6 +1,6 @@
 <!-- 资源列表 -->
 <template>
-  <div class="">
+  <div class="list">
     <h2 style="font-weight: bold;">内容部分</h2>
   </div>
 </template>
@@ -36,4 +36,8 @@ export default {
 };
 </script>
 <style scoped>
+.list {
+  background-color: white;
+  padding: 16px;
+}
 </style>
