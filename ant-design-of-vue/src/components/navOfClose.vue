@@ -1,17 +1,30 @@
 <!-- 导航标签 -->
 <template>
   <div class="nav-of-close">
-    <a-tabs v-model="activeKey" @tabClick="tabClick" hide-add type="editable-card" @edit="onEdit">
-      <a-tab-pane
-        key="index"
-        tab="首页"
-        :closable="false"
-      >
-      </a-tab-pane>
+    <a-tabs
+      v-model="activeKey"
+      @tabClick="tabClick"
+      hide-add
+      type="editable-card"
+      @edit="onEdit"
+    >
+      <a-tab-pane key="index" tab="首页" :closable="false"> </a-tab-pane>
       <a-tab-pane
         v-for="item in menuList"
-        :key="JSON.parse(item).nowTags.length == 0 ? JSON.parse(item).menuId.toString() : JSON.parse(item).menuId.toString() + '-' + JSON.parse(item).nowTags[0].tagsId.toString()"
-        :tab="JSON.parse(item).nowTags.length == 0 ? JSON.parse(item).menuName.toString() : JSON.parse(item).menuName.toString() + ' > ' + JSON.parse(item).nowTags[0].tagsName.toString()"
+        :key="
+          JSON.parse(item).nowTags.length == 0
+            ? JSON.parse(item).menuId.toString()
+            : JSON.parse(item).menuId.toString() +
+              '-' +
+              JSON.parse(item).nowTags[0].tagsId.toString()
+        "
+        :tab="
+          JSON.parse(item).nowTags.length == 0
+            ? JSON.parse(item).menuName.toString()
+            : JSON.parse(item).menuName.toString() +
+              ' > ' +
+              JSON.parse(item).nowTags[0].tagsName.toString()
+        "
         :closable="true"
       >
       </a-tab-pane>
@@ -42,21 +55,24 @@ export default {
   },
   //监控data中的数据变化
   watch: {
-    currentMenu(){
-      if(this.currentMenu.menuId != undefined){
-        if(this.currentMenu.nowTags.length == 0){
+    currentMenu() {
+      if (this.currentMenu.menuId != undefined) {
+        if (this.currentMenu.nowTags.length == 0) {
           this.activeKey = this.currentMenu.menuId.toString();
-        }else{
-          this.activeKey = this.currentMenu.menuId.toString() + "-" + this.currentMenu.nowTags[0].tagsId.toString();
+        } else {
+          this.activeKey =
+            this.currentMenu.menuId.toString() +
+            "-" +
+            this.currentMenu.nowTags[0].tagsId.toString();
         }
       }
     },
-    $route(val){
+    $route(val) {
       let path = val.path;
-      if(path != "/" && path != "/list"){
+      if (path != "/" && path != "/list") {
         this.activeKey = "";
-      }else{
-        if(val.query.select != undefined && val.query.select != ""){
+      } else {
+        if (val.query.select != undefined && val.query.select != "") {
           this.selectNav(val.query.select);
         }
       }
@@ -64,22 +80,20 @@ export default {
   },
   //方法集合
   methods: {
-
     // 点击导航标签
-    tabClick(key){
-
+    tabClick(key) {
       let val = key;
 
       let path = "";
-      let open = val.split('-')[0];
+      let open = val.split("-")[0];
       let select = val;
       let query = null;
 
-      if(val == "index"){
+      if (val == "index") {
         path = "/";
         query = {};
-      }else{
-        path = "/list"
+      } else {
+        path = "/list";
         query = { open: open, select: select };
       }
 
@@ -87,20 +101,19 @@ export default {
         path: path,
         query: query,
       });
-
     },
-    
+
     // 根据传入的val跳转
-    selectNav(val){
+    selectNav(val) {
       let path = "";
-      let open = val.split('-')[0];
+      let open = val.split("-")[0];
       let select = val;
       let query = null;
 
-      if(val == "index"){
+      if (val == "index") {
         path = "/";
         query = {};
-      }else{
+      } else {
         path = this.$route.path;
         query = { open: open, select: select };
       }
@@ -118,30 +131,57 @@ export default {
     // 移除导航标签
     remove(targetKey) {
       let menu = this.menuList;
-      
-      let menuId = targetKey.split('-')[0];
+
+      let menuId = targetKey.split("-")[0];
       let tagsId = null;
 
-      if(targetKey.split('-').length > 1){
-        tagsId = targetKey.split('-')[1];
+      if (targetKey.split("-").length > 1) {
+        tagsId = targetKey.split("-")[1];
       }
 
       let index = -1;
 
-      if(tagsId == null){
-        index = menu.findIndex(item => JSON.parse(item).menuId == menuId);
-      }else{
-        index = menu.findIndex(item => JSON.parse(item).menuId == menuId && JSON.parse(item).nowTags[0].tagsId == tagsId);
+      if (tagsId == null) {
+        index = menu.findIndex((item) => JSON.parse(item).menuId == menuId);
+      } else {
+        index = menu.findIndex(
+          (item) =>
+            JSON.parse(item).menuId == menuId &&
+            JSON.parse(item).nowTags[0].tagsId == tagsId
+        );
       }
-       
+
       index != -1 ? this.$store.commit("removeMenu", index) : "";
 
+      // 删除该导航标签后跳转页面
+      let gotoPath = "/";
+      let query = {};
+      let menulength = this.menuList.length;
+      if (menulength > 0) {
+        let menu = JSON.parse(this.menuList[menulength - 1]);
+        if (menu.nowTags.length > 0) {
+          query = {open: menu.menuId,select: menu.menuId+"-"+menu.nowTags[0].tagsId};
+        }else{
+          query = {open: menu.menuId,select: menu.menuId};
+        }
+        gotoPath = "/list";
+      }else{
+        this.activeKey = "index";
+      }
+
+      this.$router.push({
+        path: gotoPath,
+        query: query,
+      });
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
     // 刚进入页面时设置其选中的导航标签
-    if(this.$route.query.select != undefined && this.$route.query.select != ""){
+    if (
+      this.$route.query.select != undefined &&
+      this.$route.query.select != ""
+    ) {
       this.activeKey = this.$route.query.select;
     }
   },
@@ -157,14 +197,12 @@ export default {
 };
 </script>
 <style scoped>
-
-.nav-of-close{
+.nav-of-close {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
 /* 清除ant默认的margin-bottom */
-.ant-tabs ::v-deep .ant-tabs-bar{
+.ant-tabs ::v-deep .ant-tabs-bar {
   margin: 0px;
 }
-
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view />
+    <router-view/>
   </div>
 </template>
 
@@ -16,16 +16,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* 解决搜索框清除单个记录文字与按钮重叠问题 */
-.ant-select-dropdown-menu-item{
-  display: flex !important;
-}
-.ant-select-dropdown-menu-item font{
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 
 /* 滚动条美化 */
 ::-webkit-scrollbar-track {
@@ -47,4 +37,20 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.2);
 }
+
+
+/* 自定义消息框 */
+.el-message{
+  z-index: 3000 !important;
+  background-color: white !important;
+  padding: 10px 20px !important;
+  border: none !important;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
+  min-width: auto !important;
+}
+.el-message__content{
+  font-size: 12px !important;
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
 </style>
