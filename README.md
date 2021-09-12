@@ -40,13 +40,13 @@
 
 #### Element-UI
 
-![image-20210912221828636](E:\Web\base-web-admin\assets\element-ui\image-20210912221828636.png)
+![image-20210912221828636](https://gitee.com/zhoututu/base-web-admin/blob/master/assets/element-ui/image-20210912221828636.png)
 
-![image-20210912221858518](E:\Web\base-web-admin\assets\element-ui\image-20210912221858518.png)
+![image-20210912221858518](https://gitee.com/zhoututu/base-web-admin/blob/master/assets/element-ui/image-20210912221858518.png)
 
-![image-20210912221915023](E:\Web\base-web-admin\assets\element-ui\image-20210912221915023.png)
+![image-20210912221915023](https://gitee.com/zhoututu/base-web-admin/blob/master/assets/element-ui/image-20210912221915023.png)
 
-![image-20210912221931196](E:\Web\base-web-admin\assets\element-ui\image-20210912221931196.png)              ![image-20210912221941131](E:\Web\base-web-admin\assets\element-ui\image-20210912221941131.png)
+![image-20210912221931196](https://gitee.com/zhoututu/base-web-admin/blob/master/assets/element-ui/image-20210912221931196.png)              ![image-20210912221941131](https://gitee.com/zhoututu/base-web-admin/blob/master/assets/element-ui/image-20210912221941131.png)
 
 
 
@@ -54,11 +54,11 @@
 
 #### Ant-Design-Of-Vue
 
-![image-20210912220100725](E:\Web\base-web-admin\assets\and-design-of-vue\image-20210912220100725.png)
+![image-20210912220100725](https://gitee.com/zhoututu/base-web-admin/blob/master/assets/and-design-of-vue/image-20210912220100725.png)
 
-![image-20210912220124768](E:\Web\base-web-admin\assets\and-design-of-vue\image-20210912220124768.png)
+![image-20210912220124768](https://gitee.com/zhoututu/base-web-admin/blob/master/assets/and-design-of-vue/image-20210912220124768.png)
 
-![image-20210912220152710](E:\Web\base-web-admin\assets\and-design-of-vue\image-20210912220152710.png)
+![image-20210912220152710](https://gitee.com/zhoututu/base-web-admin/blob/master/assets/and-design-of-vue/image-20210912220152710.png)
 
-![image-20210912220208044](E:\Web\base-web-admin\assets\and-design-of-vue\image-20210912220208044.png)                  ![image-20210912220221770](E:\Web\base-web-admin\assets\and-design-of-vue\image-20210912220221770.png)
+![image-20210912220208044](https://gitee.com/zhoututu/base-web-admin/blob/master/assets/and-design-of-vue/image-20210912220208044.png)                  ![image-20210912220221770](https://gitee.com/zhoututu/base-web-admin/blob/master/assets/and-design-of-vue/image-20210912220221770.png)
 
